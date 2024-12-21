@@ -1,5 +1,9 @@
 import datetime
 import logging
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from src.database import create_connection, create_table, insert_greeting, fetch_greetings
 
 # Configure logging
 logging.basicConfig(
@@ -9,9 +13,9 @@ logging.basicConfig(
 
 def get_greeting(language):
     """
-    This function returns a greeting message based on the current time of the day."""
+    Returns a greeting based on the current time of day and language.
+    """
     current_hour = datetime.datetime.now().hour
-    # Determine the appropriate greeting message based on the current time
     if language == "en":
         if current_hour < 12:
             return "Good morning"
@@ -19,7 +23,6 @@ def get_greeting(language):
             return "Good afternoon"
         else:
             return "Good evening"
-    # Add support for Spanish language
     elif language == "es":
         if current_hour < 12:
             return "Buenos días"
@@ -27,33 +30,54 @@ def get_greeting(language):
             return "Buenas tardes"
         else:
             return "Buenas noches"
-
+    elif language == "id":
+        if current_hour < 12:
+            return "Selamat pagi"
+        elif current_hour < 18:
+            return "Selamat siang"
+        else:
+            return "Selamat malam"
 
 def get_day_greeting():
     """
-    This function returns a greeting message based on the current day of the week."""
+    Returns a greeting based on the current day of the week.
+    """
     day_of_week = datetime.datetime.now().strftime("%A")
     return f"Happy {day_of_week}!"
 
 def main():
     """
-    This is the main function that gets the user's name, generates a greeting message, and prints it to the console.
+    Main function to run the greeting program.
     """
-    # Get the user's name
+    # Connect to the database
+    database = "greetings.db"
+    conn = create_connection(database)
+    if conn is not None:
+        create_table(conn)
+    
+    # Get user's name and preferred language
     name = input("Enter your name: ")
-    language = input("Enter your language (en/es): ")
-
-    # Generate the greeting message
+    language = input("Enter your preferred language (en/es): ")
+    
+    # Generate greetings
     greeting = get_greeting(language)
     day_greeting = get_day_greeting()
-
+    
     # Log the generated greetings
     logging.info(f"Day greeting generated: {day_greeting}")
     logging.info(f"Greeting generated: {greeting}")
-
-    # Print the greeting message
+    
+    # Insert greeting into the database
+    insert_greeting(conn, name, f"{greeting}, {name}! {day_greeting}")
+    
+    # Fetch and display all greetings from the database
+    rows = fetch_greetings(conn)
+    for row in rows:
+        print(row)
+    
+    # Print the greetings
     print(f"{greeting}, {name}! {day_greeting}")
 
 if __name__ == "__main__":
-    # Run the main function if the script is executed
+    # Run the main function if this script is executed
     main()
