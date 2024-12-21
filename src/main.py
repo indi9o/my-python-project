@@ -11,6 +11,7 @@ def get_greeting(language):
     """
     This function returns a greeting message based on the current time of the day."""
     current_hour = datetime.datetime.now().hour
+    # Determine the appropriate greeting message based on the current time
     if language == "en":
         if current_hour < 12:
             return "Good morning"
@@ -18,6 +19,7 @@ def get_greeting(language):
             return "Good afternoon"
         else:
             return "Good evening"
+    # Add support for Spanish language
     elif language == "es":
         if current_hour < 12:
             return "Buenos días"
