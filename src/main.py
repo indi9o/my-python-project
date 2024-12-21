@@ -34,7 +34,7 @@ def get_greeting(language):
         if current_hour < 12:
             return "Selamat pagi"
         elif current_hour < 18:
-            return "Selamat siang"
+            return "Selamat sore"
         else:
             return "Selamat malam"
 
