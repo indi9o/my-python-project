@@ -7,7 +7,7 @@ This project is a simple Python application that greets the user based on the cu
 
 1. **Activate the virtual environment:**
     ```bash
-    source venv/bin/activate
+    source .venv/bin/activate
     ```
 
 2. **Run the main script:**
