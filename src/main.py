@@ -2,6 +2,7 @@ import datetime
 import logging
 import sys
 import os
+import requests
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from src.database import create_connection, create_table, insert_greeting, fetch_greetings
 
@@ -44,6 +45,20 @@ def get_day_greeting():
     """
     day_of_week = datetime.datetime.now().strftime("%A")
     return f"Happy {day_of_week}!"
+
+def get_weather(api_key, city):
+    """
+    Fetches the current weather for the given city using the OpenWeatherMap API.
+    """
+    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        weather_description = data['weather'][0]['description']
+        temperature = data['main']['temp']
+        return f"{weather_description.capitalize()}, {temperature}°C"
+    else:
+        return "Unable to fetch weather data"
 
 def main():
     """
